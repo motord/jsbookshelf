@@ -166,56 +166,18 @@ img {
   <div id="container">
     <header>
 	    <div class="container">
-			<div class="row">
-				<div class="twocol">
-					<p>One</p>
-				</div>
-				<div class="twocol">
-					<p>One</p>
-				</div>
-				<div class="twocol">
-					<p>One</p>
-				</div>
-				<div class="twocol">
-					<p>One</p>
-				</div>
-				<div class="twocol">
-					<p>One</p>
-				</div>
-				<div class="twocol last">
-					<p>One</p>
-				</div>
-			</div>
 	    </div>
     </header>
     <div id="main" role="main">
 	    <div class="container">
-			<div class="row">
-				<div class="twocol">
-					<a href="0192100246.Oxford.University.Press.USA.Think.A.Compelling.Introduction.to.Philosophy.Oct.1999.pdf">	
-						<img src="0192100246.Oxford.University.Press.USA.Think.A.Compelling.Introduction.to.Philosophy.Oct.1999.png" title="0192100246.Oxford.University.Press.USA.Think.A.Compelling.Introduction.to.Philosophy.Oct.1999"></img>
-					</a>
-				</div>
-				<div class="twocol">
-					<p>One</p>
-				</div>
-				<div class="twocol">
-					<p>One</p>
-				</div>
-				<div class="twocol">
-					<p>One</p>
-				</div>
-				<div class="twocol">
-					<p>One</p>
-				</div>
-				<div class="twocol last">
-					<p>One</p>
-				</div>
-			</div>
 	    </div>
     </div>
     <footer>
-
+		<div class="twocol">
+			<a href="<%= book.url %>">	
+				<img src="<%= book.image %>" title="<%= book.title %>"></img>
+			</a>
+		</div>
     </footer>
   </div> <!--! end of #container -->
 
@@ -229,9 +191,9 @@ img {
   <script src="//k2onepiece.appspot.com/media/js/libs/sammy-latest.min.js"></script>
   <script>window.Sammy || document.write("<script src='//one.samdeha.com/media/js/libs/sammy-latest.min.js'>\x3C/script>")</script>
   <script src="//k2onepiece.appspot.com/media/js/libs/plugins/sammy.template.js"></script>
-  <script>window.Sammy || document.write("<script src='//one.samdeha.com/media/js/libs/plugins/sammy.template.js'>\x3C/script>")</script>
+  <script>window.Sammy.Template || document.write("<script src='//one.samdeha.com/media/js/libs/plugins/sammy.template.js'>\x3C/script>")</script>
   <script src="//k2onepiece.appspot.com/media/js/libs/plugins/sammy.storage.js"></script>
-  <script>window.Sammy || document.write("<script src='//one.samdeha.com/media/js/libs/plugins/sammy.storage.js'>\x3C/script>")</script>
+  <script>window.Sammy.Session || document.write("<script src='//one.samdeha.com/media/js/libs/plugins/sammy.storage.js'>\x3C/script>")</script>
 
   <script>
       (function($) {
@@ -253,14 +215,14 @@ img {
 		            $('a',content).each(function(index){
 		            	var href=$(this).attr('href');
 		            	var parts=href.split('/');
-		            	var url=parts[parts.length-1];
-		            	parts=url.split('.');
-		            	var ext=parts[parts.length-1]
+		            	var url=parts.slice(-1);
+		            	parts=url[0].split('.');
+		            	var ext=parts.slice(-1);
 		            	if (ext=='pdf'){
 		            		if (pdf!='#'){
-				            	context.books.push({'image': '#',
-					            	'url': pdf,
-					            	'title': title
+				            	context.books.push({image: '#',
+					            	url: pdf,
+					            	title: title
 				            	});
 			            	};
 		            		pdf=url;
@@ -268,9 +230,9 @@ img {
 		            	};
 		            	if (ext=='png'){
 		            		png=url;
-			            	context.books.push({'image': png,
-				            	'url': pdf,
-				            	'title': title
+			            	context.books.push({image: png,
+				            	url: pdf,
+				            	title: title
 			            	});
 		            		pdf='#';
 			            };
@@ -282,7 +244,7 @@ img {
 		    this.get('#/', function(context) {
 		      context.app.swap('');
 		      $.each(this.books, function(i, book) {
-		        context.render('book.template', {book: book})
+		        context.load('book.template').render({book: book})
 		               .appendTo(context.$element());
 		      });
 		    });

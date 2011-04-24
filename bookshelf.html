@@ -165,19 +165,10 @@ img {
 
   <div id="container">
     <header>
-	    <div class="container">
-	    </div>
     </header>
     <div id="main" role="main">
-	    <div class="container">
-	    </div>
     </div>
     <footer>
-		<div class="twocol">
-			<a href="<%= book.url %>">	
-				<img src="<%= book.image %>" title="<%= book.title %>"></img>
-			</a>
-		</div>
     </footer>
   </div> <!--! end of #container -->
 
@@ -195,6 +186,20 @@ img {
   <script src="//k2onepiece.appspot.com/media/js/libs/plugins/sammy.storage.js"></script>
   <script>window.Sammy.Session || document.write("<script src='//one.samdeha.com/media/js/libs/plugins/sammy.storage.js'>\x3C/script>")</script>
 
+  <script type="text/html" id="books_tmpl" data-engine="template">
+	<% for ( var i = 0; i < books.length; i++ ) { %>
+		<% if (i==0) { %><div class="container"><% } %>
+			<% if ((i%6)==0) { %><div class="row"><% } %>
+				<div class="twocol<% if ((i%6)==5 || i==(books.length-1)) { %> last<% } %>">
+					<a href="<%= books[i].url %>">	
+						<img src="<%= books[i].image %>" title="<%= books[i].title %>"></img>
+					</a>
+				</div>
+			<% if ((i%6)==5 || i==(books.length-1)) { %></div><% } %>
+		<% if (i==(books.length-1)) { %></div><% } %>
+	<% } %>
+  </script>
+
   <script>
       (function($) {
 
@@ -203,8 +208,6 @@ img {
 	        this.use('Session');
 	        this.use('Cache');
 	        
-	        var columns=6;
-
 		    this.around(function(callback) {
 		      var context = this;
 		      context.books = [];
@@ -244,23 +247,8 @@ img {
 		
 		    this.get('#/', function(context) {
 		      context.app.swap('');
-		      var rc=context.load('book.template');
-		      rc.load('first.template');
-		      rc.load('last.template');
-		      rc.load('begin.template');
-		      rc.load('end.template');
-		      var volumes=this.books.length;
-		      $.each(this.books, function(i, book) {
-		        if (i==0) rc.render('begin.template').appendTo(context.$element());
-		        if ((i%columns)==0) rc.render('first.template').appendTo(context.$element());
-		      	if ((i%columns)==(columns-1) || i==(volumes-1)){
-		      		rc.render('last.template', {book: book}).appendTo(context.$element());
-		      	}
-		      	else {
-		        	rc.render('book.template', {book: book}).appendTo(context.$element());
-		        }
-		        if (i==(volumes-1)) rc.render('end.template').appendTo(context.$element());
-		      });
+		      context.render($('#books_tmpl'), {books: this.books})
+		      	.appendTo(context.$element());
 		    });
 			
 		  });

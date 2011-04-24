@@ -1,5 +1,0 @@
-<div class="twocol">
-	<a href="<%= book.url %>">	
-		<img src="<%= book.image %>" title="<%= book.title %>"></img>
-	</a>
-</div>

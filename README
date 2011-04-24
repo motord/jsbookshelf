@@ -1,0 +1,3 @@
+1. mogrify -format png -thumbnail x300 *.pdf[0]
+2. Put bookshelf.html in the folder with the pdfs and pngs
+3. Voila

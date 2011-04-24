@@ -201,6 +201,7 @@ img {
 		  var app = $.sammy('#main', function() {
 	        this.use('Template');
 	        this.use('Session');
+	        this.use('Cache');
 	        
 	        var columns=6;
 
@@ -243,12 +244,25 @@ img {
 		
 		    this.get('#/', function(context) {
 		      context.app.swap('');
+		      var rc=context.load('book.template');
+		      rc.load('first.template');
+		      rc.load('last.template');
+		      rc.load('begin.template');
+		      rc.load('end.template');
+		      var volumes=this.books.length;
 		      $.each(this.books, function(i, book) {
-		        context.load('book.template').render({book: book})
-		               .appendTo(context.$element());
+		        if (i==0) rc.render('begin.template').appendTo(context.$element());
+		        if ((i%columns)==0) rc.render('first.template').appendTo(context.$element());
+		      	if ((i%columns)==(columns-1) || i==(volumes-1)){
+		      		rc.render('last.template', {book: book}).appendTo(context.$element());
+		      	}
+		      	else {
+		        	rc.render('book.template', {book: book}).appendTo(context.$element());
+		        }
+		        if (i==(volumes-1)) rc.render('end.template').appendTo(context.$element());
 		      });
 		    });
-		
+			
 		  });
 		
 		  $(function() {
